@@ -1,10 +1,10 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 import os, sys, matplotlib.pyplot as plt, string, numpy as np
 from decimal import *
 
 def Usage():
-    print "Usage: "+sys.argv[0]+" <File or Text>"
+    print("Usage: "+sys.argv[0]+" <File or Text>")
     exit()
 
 def relativeFrequency():
@@ -14,6 +14,8 @@ def relativeFrequency():
 def freq(ciphertext):
     letters = [['A', 0], ['B', 0], ['C', 0], ['D', 0], ['E', 0], ['F', 0], ['G', 0], ['H', 0], ['I', 0], ['J', 0], ['K', 0], ['L', 0], ['M', 0], ['N', 0], ['O', 0], ['P', 0], ['Q', 0], ['R', 0], ['S', 0], ['T', 0], ['U', 0], ['V', 0], ['W', 0], ['X', 0], ['Y', 0], ['Z', 0]]
     length=len(ciphertext)-1
+    if(length==0):
+        return letters
     for i in letters:
        i[1]=Decimal(ciphertext.count(i[0]))/Decimal(length)
     return letters
@@ -35,7 +37,7 @@ def frequencyAnalysis(cipher):
         ind3.append(ind[i]+width/2)
     ax.set_xticks(ind3)
     labels=[]
-    for b in string.uppercase:
+    for b in string.ascii_uppercase:
         labels.append(b)
     ax.set_xticklabels(labels)
     ax.legend([rects1[0],rects2[0]],['Ciphertext','English'])
@@ -45,16 +47,19 @@ def Vigenere(cipher):
     keylength=None
     while keylength is None:
         try:
-            keylength=int(raw_input("How long is the Key?"))
+            keylength=int(input("How long is the Key?"))
+            if(keylength<1):
+                raise ValueError
         except ValueError:
-            print "Type in an integer value."
+            print("Type in an integer value.")
+            keylength=None
     
     width=.35
     ciphers=['']*keylength
     cipherfreq=[0]*keylength
     ind=np.arange(1,26*(keylength*width+2*width),keylength*width+2*width)
-    print ind
-    print len(ind)
+    #print(ind)
+    #print(len(ind))
 
     for i in range(0,len(cipher)-1):
         ciphers[i%keylength]=ciphers[i%keylength]+cipher[i]
@@ -67,7 +72,7 @@ def Vigenere(cipher):
         indtemp=[]
         for x in range(0,len(ind)):
             indtemp.append(ind[x]+width*i)
-        print "For "+str(i)+" ",indtemp
+        #print("For "+str(i)+" ",indtemp)
         rects.append(ax.bar(indtemp,getIndex(cipherfreq[i],1),width,color=colors[colorindex]))
         del indtemp
         colorindex+=1
@@ -80,7 +85,7 @@ def Vigenere(cipher):
 
     ax.set_xticks(ind3)
     labels=[]
-    for b in string.uppercase:
+    for b in string.ascii_uppercase:
         labels.append(b)
     ax.set_xticklabels(labels)
     legendrect=[]
@@ -116,11 +121,11 @@ def main():
         print ("""        1. Frequency Analysis
         2. Vigenere Frequency Analysis
         3. Exit""")
-        ans=raw_input()
+        ans=input()
         if ans =="1":
             frequencyAnalysis(cipher.upper())
         elif ans=="2":
-            Vigenere(cipher)
+            Vigenere(cipher.upper())
         elif ans =="3":
             exit()
         else:
